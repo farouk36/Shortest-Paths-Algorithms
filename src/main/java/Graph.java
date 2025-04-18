@@ -1,23 +1,11 @@
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
-class Edge {
-    int  from,to, weight;
-    public Edge(int from,int to, int weight) {
-        this.from=from;
-        this.to = to;
-        this.weight = weight;
-    }
-}
-
 public class Graph {
     private int nodes;
     private List<Edge> edges;
-
-
 
     public Graph(String filePath) throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(filePath));
@@ -46,9 +34,49 @@ public class Graph {
         return edges;
     }
 
+    public List<List<Edge>> adjList (List<Edge> edges) {
+        List<List<Edge>> adjList = new ArrayList<>(nodes);
+        for (int i = 0; i < nodes; i++) {
+            adjList.add(new ArrayList<>());
+        }
+        for (Edge edge : edges) {
+            adjList.get(edge.from).add(edge);
+        }
+        return adjList;
+    }
 
     public void dijkstra(int source, int[] costs, int[] parents) {
+        if (source < 0 || source >= nodes) {
+            throw new IllegalArgumentException("Invalid source node index " + source);
+        }
+        List<List<Edge>> adj = adjList(edges);      //adjacency list of the graph <List<List<Edge>>>
 
+        Arrays.fill(costs, Integer.MAX_VALUE);
+        Arrays.fill(parents, -1);
+
+        costs[source] = 0;
+        Boolean [] visited = new Boolean[nodes];
+        Arrays.fill(visited, false);
+
+        PriorityQueue<Edge> pq = new PriorityQueue<>(Comparator.comparingInt(e -> e.weight));
+        pq.add(new Edge(source, source, 0));
+
+        while(!pq.isEmpty()){
+            Edge minEdge = pq.poll();
+            int v = minEdge.to;
+
+            if(visited[v]) continue;
+
+            for(Edge edge : adj.get(v)){
+                int to = edge.to, weight = edge.weight;
+                if(costs[v] + weight < costs[to]){
+                    costs[to] = costs[v] + weight;
+                    parents[to] = v;
+                    pq.add(new Edge(v, to, costs[to]));
+                }
+            }
+            visited[v] = true;
+        }
     }
 
 
@@ -121,8 +149,13 @@ public class Graph {
         return true;
     }
 
-    public static void main(String[] args) throws IOException {
-        Graph g=new Graph("input");
-
-    }
+//    public static void main(String[] args) throws IOException {
+//        Graph g=new Graph("input");
+//        int[] costs=new int[g.size()];
+//        int[] predecessors=new int[g.size()];
+//        g.dijkstra(0,costs,predecessors);
+//        for (int i = 0; i < g.size(); i++) {
+//            System.out.println(i + " -> " + costs[i] + " (" + predecessors[i] + ")");
+//        }
+//    }
 }
