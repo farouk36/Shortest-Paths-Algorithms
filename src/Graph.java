@@ -52,15 +52,13 @@ public class Graph {
     }
 
 
-    public boolean hasNegativeCycle() {    //?check if there is a negative cycle */
+    private  boolean hasNegativeCycle(int[] costs) {    //?check if there is a negative cycle */
         for (Edge e : edges) {
-            if (e.from == e.to && e.weight < 0) {
-                return true;        //! Negative cycle detected
-            }
+            if (costs[e.from] != Integer.MAX_VALUE && costs[e.from] + e.weight < costs[e.to])
+                return true;   //! Negative cycle detected    
         }
         return false;        //! No negative cycle
     }
-
     public boolean bellmanFord(int source, int[] costs, int[] parents) {  //?Bellman-Ford algorithm
         if (source < 0 || source >= nodes) {
             throw new IllegalArgumentException("Invalid source node index " + source);
@@ -79,7 +77,7 @@ public class Graph {
             }
         }
 
-        return !hasNegativeCycle();
+        return !hasNegativeCycle(costs);
     }
 
 
