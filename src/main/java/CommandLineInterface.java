@@ -10,7 +10,7 @@ public class CommandLineInterface {
     public static final String CYAN = "\u001B[36m";
     public static final String BOLD = "\u001B[1m";
 
-    public void Main_Func (){
+    public void Main_Func (){ //? Main function to run the program
         System.out.println(CYAN + BOLD + "Welcome to the Graph Algorithm CLI!" + RESET);
         Scanner scanner = new Scanner(System.in);
 
@@ -77,18 +77,19 @@ public class CommandLineInterface {
         }
     }
 
-    private static void handle_singleSourceShortestPaths(Graph graph, Scanner scanner) {
+    private static void handle_singleSourceShortestPaths(Graph graph, Scanner scanner) { //? Function to handle single-source shortest paths
 
     }
 
-    private static void handle_allPairsShortestPaths(Graph graph, Scanner scanner) {
-        
-    }
-    private static void handle_checkForNegativeCycles(Graph graph, Scanner scanner) {
+    private static void handle_allPairsShortestPaths(Graph graph, Scanner scanner) { //? Function to handle all-pairs shortest paths
         
     }
 
-    private  static int takeChoiceAndCheckValidity(int maxLimit, int minLimit, Scanner scanner){
+    private static void handle_checkForNegativeCycles(Graph graph, Scanner scanner) { //? Function to handle check for negative cycles
+        
+    }
+
+    private  static int takeChoiceAndCheckValidity(int maxLimit, int minLimit, Scanner scanner){ //? Function to take user input and check if it is valid
         while (true){
             try {
                 int choice = Integer.parseInt(scanner.nextLine());
@@ -105,7 +106,7 @@ public class CommandLineInterface {
     }
     
 
-    public static void main(String[] args) {
+    public static void main(String[] args) { //? Main function to run the program
         CommandLineInterface cli = new CommandLineInterface();
         cli.Main_Func();
     }
