@@ -38,8 +38,12 @@ public class Graph {
         reader.close();
     }
 
-    public int size() {
+    public int size() {     //?get the number of nodes */
         return nodes;
+    }
+
+    public List<Edge> getEdges() {      //?get the Edges */
+        return edges;
     }
 
 
@@ -48,10 +52,36 @@ public class Graph {
     }
 
 
-    public boolean bellmanFord(int source, int[] costs, int[] parents) {
-
-        return true;
+    public boolean hasNegativeCycle() {    //?check if there is a negative cycle */
+        for (Edge e : edges) {
+            if (e.from == e.to && e.weight < 0) {
+                return true;        //! Negative cycle detected
+            }
+        }
+        return false;        //! No negative cycle
     }
+
+    public boolean bellmanFord(int source, int[] costs, int[] parents) {  //?Bellman-Ford algorithm
+        if (source < 0 || source >= nodes) {
+            throw new IllegalArgumentException("Invalid source node index " + source);
+        }
+
+        Arrays.fill(costs, Integer.MAX_VALUE);
+        Arrays.fill(parents, -1);
+        costs[source] = 0;
+
+        for (int i = 0; i < nodes - 1; i++) {
+            for (Edge e : edges) {
+                if (costs[e.from] != Integer.MAX_VALUE && costs[e.from] + e.weight < costs[e.to]) {
+                    costs[e.to] = costs[e.from] + e.weight;
+                    parents[e.to] = e.from;
+                }
+            }
+        }
+
+        return !hasNegativeCycle();
+    }
+
 
     private void initializeFloyd(int[][] costs, int[][] predecessors) {
         for (int i = 0; i < nodes; i++) {
