@@ -44,15 +44,17 @@ public class CommandLineInterface {
                     System.out.println("Enter Source Node: ");
                     int source = takeChoiceAndCheckValidity(graph.size(), 0, scanner);
                     handle_singleSourceShortestPaths(source, graph, scanner);
+                    break;
                 }
                     
                 case 2 -> {
                     handle_allPairsShortestPaths(graph, scanner);
+                    break;
                 }
                     
                 case 3 -> {
                     handle_checkForNegativeCycles(graph, scanner);
-
+                    break;
                 }
                    
                 case 4 -> {
@@ -88,24 +90,28 @@ public class CommandLineInterface {
                 
             case 2:
                 boolean result = graph.bellmanFord(source, costs, predecessors);
-                // if (!result) {
-                //     System.out.println(RED + "Warning: Negative cycle detected!" + RESET);
-                //     hasNegativeCycle = true;
-                // } else {
-                //     System.out.println(GREEN + "Bellman-Ford algorithm executed successfully!" + RESET);
-                // }
+                if (!result) {
+                    System.out.println(RED + "Warning: Negative cycle detected!" + RESET);
+                    System.out.println(RED + "Bellman-Ford algorithm failed!" + RESET);
+                    System.out.println("Returning to main menu...");
+                    hasNegativeCycle = true;
+                } else {
+                    System.out.println(GREEN + "Bellman-Ford algorithm executed successfully!" + RESET);
+                }
                 break;
                 
             case 3:
                 costsMatrix = new int[graph.size()][graph.size()];
                 predecessorsMatrix = new int[graph.size()][graph.size()];
                 result = graph.floydWarshall(costsMatrix, predecessorsMatrix);
-                // if (!result) {
-                //     System.out.println(RED + "Warning: Negative cycle detected!" + RESET);
-                //     hasNegativeCycle = true;
-                // } else {
-                //     System.out.println(GREEN + "Floyd-Warshall algorithm executed successfully!" + RESET);
-                // }
+                if (!result) {
+                    System.out.println(RED + "Warning: Negative cycle detected!" + RESET);
+                    System.out.println(RED + "Floyd-Warshall algorithm failed!" + RESET);
+                    System.out.println("Returning to main menu...");
+                    hasNegativeCycle = true;
+                } else {
+                    System.out.println(GREEN + "Floyd-Warshall algorithm executed successfully!" + RESET);
+                }
                 break;
         }
 
@@ -125,7 +131,7 @@ public class CommandLineInterface {
                 
                 System.out.print("Enter destination node: ");
                 int destination = takeChoiceAndCheckValidity(graph.size(), 0, scanner);
-                
+                System.out.println(GREEN + "Bellman-Ford algorithm executed successfully!" + RESET);
                 if (choice == 3) { // Floyd-Warshall
                     if (queryChoice == 1) {
                         System.out.println("Cost of shortest path: " + costsMatrix[source][destination]);
@@ -178,6 +184,8 @@ public class CommandLineInterface {
                     boolean result = graph.bellmanFord(i, costs, predecessors);
                     if (!result) {
                         System.out.println(RED + "Warning: Negative cycle detected from source " + i + "!" + RESET);
+                        System.out.println(RED + "Bellman-Ford algorithm failed!" + RESET);
+                        System.out.println("Returning to main menu...");
                         hasNegativeCycle = true;
                         break;
                     }
@@ -190,12 +198,14 @@ public class CommandLineInterface {
                 
             case 3:{
                 boolean result = graph.floydWarshall(costsMatrix, predecessorsMatrix);
-                // if (!result) {
-                //     System.out.println(RED + "Warning: Negative cycle detected!" + RESET);
-                //     hasNegativeCycle = true;
-                // } else {
-                //     System.out.println(GREEN + "Floyd-Warshall algorithm executed successfully!" + RESET);
-                // }
+                if (!result) {
+                    System.out.println(RED + "Warning: Negative cycle detected!" + RESET);
+                    System.out.println(RED + "Floyd-Warshall algorithm failed!" + RESET);
+                    System.out.println("Returning to main menu...");
+                    hasNegativeCycle = true;
+                } else {
+                    System.out.println(GREEN + "Floyd-Warshall algorithm executed successfully!" + RESET);
+                }
                 break;
             }
         }
