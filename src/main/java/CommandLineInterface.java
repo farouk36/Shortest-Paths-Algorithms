@@ -41,30 +41,18 @@ public class CommandLineInterface {
 
             switch (choice){
                 case 1 -> {
-                    handle_singleSourceShortestPaths(graph, scanner);
-                    
-                    System.out.println(GREEN + "Single-source shortest paths algorithm executed successfully!" + RESET);
-                    System.out.println("Press Enter to continue...");
-                    scanner.nextLine(); //? Wait for user to press Enter
-                    break;
+                    System.out.println("Enter Source Node: ");
+                    int source = takeChoiceAndCheckValidity(graph.size(), 0, scanner);
+                    handle_singleSourceShortestPaths(source, graph, scanner);
                 }
                     
                 case 2 -> {
                     handle_allPairsShortestPaths(graph, scanner);
-
-                    System.out.println(GREEN + "All-pairs shortest paths algorithm executed successfully!" + RESET);
-                    System.out.println("Press Enter to continue...");
-                    scanner.nextLine(); //? Wait for user to press Enter
-                    break;
                 }
                     
                 case 3 -> {
                     handle_checkForNegativeCycles(graph, scanner);
 
-                    System.out.println(GREEN + "Negative cycle check executed successfully!" + RESET);
-                    System.out.println("Press Enter to continue...");
-                    scanner.nextLine(); //? Wait for user to press Enter
-                    break;
                 }
                    
                 case 4 -> {
@@ -73,24 +61,190 @@ public class CommandLineInterface {
                     return;
                 }
             } 
-
         }
     }
 
-    private static void handle_singleSourceShortestPaths(Graph graph, Scanner scanner) { //? Function to handle single-source shortest paths
-
-    }
-
-    private static void handle_allPairsShortestPaths(Graph graph, Scanner scanner) { //? Function to handle all-pairs shortest paths
+    private static void handle_singleSourceShortestPaths(int source, Graph graph, Scanner scanner) {
+        System.out.println(YELLOW + BOLD + "\n=== SINGLE-SOURCE SHORTEST PATHS ===" + RESET);
+        System.out.println("Choose algorithm:");
+        System.out.println("1. Dijkstra's Algorithm");
+        System.out.println("2. Bellman-Ford Algorithm");
+        System.out.println("3. Floyd-Warshall Algorithm");
+        System.out.print(YELLOW + "Choose an option: " + RESET);
         
-    }
-
-    private static void handle_checkForNegativeCycles(Graph graph, Scanner scanner) { //? Function to handle check for negative cycles
+        int choice = takeChoiceAndCheckValidity(3, 1, scanner);
         
+        int[] costs = new int[graph.size()];
+        int[] predecessors = new int[graph.size()];
+        int[][] costsMatrix = null;
+        int[][] predecessorsMatrix = null;
+        boolean hasNegativeCycle = false;
+        
+        switch (choice) {
+            case 1:
+                graph.dijkstra(source, costs, predecessors);
+                System.out.println(GREEN + "Dijkstra algorithm executed successfully!" + RESET);
+                break;
+                
+            case 2:
+                boolean result = graph.bellmanFord(source, costs, predecessors);
+                // if (!result) {
+                //     System.out.println(RED + "Warning: Negative cycle detected!" + RESET);
+                //     hasNegativeCycle = true;
+                // } else {
+                //     System.out.println(GREEN + "Bellman-Ford algorithm executed successfully!" + RESET);
+                // }
+                break;
+                
+            case 3:
+                costsMatrix = new int[graph.size()][graph.size()];
+                predecessorsMatrix = new int[graph.size()][graph.size()];
+                result = graph.floydWarshall(costsMatrix, predecessorsMatrix);
+                // if (!result) {
+                //     System.out.println(RED + "Warning: Negative cycle detected!" + RESET);
+                //     hasNegativeCycle = true;
+                // } else {
+                //     System.out.println(GREEN + "Floyd-Warshall algorithm executed successfully!" + RESET);
+                // }
+                break;
+        }
+
+        if (!hasNegativeCycle) {
+            while (true) {
+                System.out.println(YELLOW + BOLD + "\n=== MENU ===" + RESET);
+                System.out.println("1. Cost of the path to a specific node");
+                System.out.println("2. Path from source to a specific node");
+                System.out.println("3. Return to main menu");
+                System.out.print(YELLOW + "Choose an option: " + RESET);
+                
+                int queryChoice = takeChoiceAndCheckValidity(3, 1, scanner);
+                
+                if (queryChoice == 3) {
+                    break;
+                }
+                
+                System.out.print("Enter destination node: ");
+                int destination = takeChoiceAndCheckValidity(graph.size(), 0, scanner);
+                
+                if (choice == 3) { // Floyd-Warshall
+                    if (queryChoice == 1) {
+                        System.out.println("Cost of shortest path: " + costsMatrix[source][destination]);
+                    } else {
+                        System.out.println("Shortest path: " + graph.getPathFloyd(source, destination, predecessorsMatrix));
+                    }
+                } else { // Dijkstra or Bellman-Ford
+                    if (queryChoice == 1) {
+                        System.out.println("Cost of shortest path: " + costs[destination]);
+                    } else {
+                        // System.out.println("Shortest path: " + graph.getPath(source, destination, predecessors));
+                    }
+                }
+            }
+        }
     }
 
-    private  static int takeChoiceAndCheckValidity(int maxLimit, int minLimit, Scanner scanner){ //? Function to take user input and check if it is valid
-        while (true){
+    private static void handle_allPairsShortestPaths(Graph graph, Scanner scanner) {
+        System.out.println(YELLOW + BOLD + "\n=== ALL-PAIRS SHORTEST PATHS ===" + RESET);
+        System.out.println("Choose algorithm:");
+        System.out.println("1. Dijkstra's Algorithm (run for each source)");
+        System.out.println("2. Bellman-Ford Algorithm (run for each source)");
+        System.out.println("3. Floyd-Warshall Algorithm");
+        System.out.print(YELLOW + "Choose an option: " + RESET);
+        
+        int choice = takeChoiceAndCheckValidity(3, 1, scanner);
+        
+        int[][] costsMatrix = new int[graph.size()][graph.size()];
+        int[][] predecessorsMatrix = new int[graph.size()][graph.size()];
+        boolean hasNegativeCycle = false;
+        
+        switch (choice) {
+            case 1:
+                
+                System.out.println(GREEN + "Dijkstra algorithm executed for all sources successfully!" + RESET);
+                break;
+                
+            case 2:
+               
+                
+                break;
+                
+            case 3:
+                boolean result = graph.floydWarshall(costsMatrix, predecessorsMatrix);
+                // if (!result) {
+                //     System.out.println(RED + "Warning: Negative cycle detected!" + RESET);
+                //     hasNegativeCycle = true;
+                // } else {
+                //     System.out.println(GREEN + "Floyd-Warshall algorithm executed successfully!" + RESET);
+                // }
+                break;
+        }
+
+        if (!hasNegativeCycle) {
+            while (true) {
+                System.out.println(YELLOW + BOLD + "\n=== MENU ===" + RESET);
+                System.out.println("1. Cost of the path between two specific nodes");
+                System.out.println("2. Path between two specific nodes");
+                System.out.println("3. Return to main menu");
+                System.out.print(YELLOW + "Choose an option: " + RESET);
+                
+                int queryChoice = takeChoiceAndCheckValidity(3, 1, scanner);
+                
+                if (queryChoice == 3) {
+                    break;
+                }
+                
+                System.out.print("Enter source node: ");
+                int source = takeChoiceAndCheckValidity(graph.size(), 0, scanner);
+                
+                System.out.print("Enter destination node: ");
+                int destination = takeChoiceAndCheckValidity(graph.size(), 0, scanner);
+                
+                if (queryChoice == 1) {
+                    System.out.println("Cost of shortest path: " + costsMatrix[source][destination]);
+                } else {
+                    if (choice == 3) { // Floyd-Warshall
+                        System.out.println("Shortest path: " + graph.getPathFloyd(source, destination, predecessorsMatrix));
+                    } else { // Dijkstra or Bellman-Ford
+                        // System.out.println("Shortest path: " + graph.getPath(source, destination, predecessorsMatrix[source]));
+                    }
+                }
+            }
+        }
+    }
+
+    private static void handle_checkForNegativeCycles(Graph graph, Scanner scanner) {
+        System.out.println(YELLOW + BOLD + "\n=== CHECK FOR NEGATIVE CYCLES ===" + RESET);
+        System.out.println("Choose algorithm:");
+        System.out.println("1. Bellman-Ford Algorithm");
+        System.out.println("2. Floyd-Warshall Algorithm");
+        System.out.print(YELLOW + "Choose an option: " + RESET);
+        
+        int choice = takeChoiceAndCheckValidity(2, 1, scanner);
+        boolean hasNegativeCycle = false;
+        
+        switch (choice) {
+            case 1:
+                int[] costs = new int[graph.size()];
+                int[] predecessors = new int[graph.size()];
+                hasNegativeCycle = !graph.bellmanFord(0, costs, predecessors);
+                break;
+                
+            case 2:
+                int[][] costsMatrix = new int[graph.size()][graph.size()];
+                int[][] predecessorsMatrix = new int[graph.size()][graph.size()];
+                hasNegativeCycle = !graph.floydWarshall(costsMatrix, predecessorsMatrix);
+                break;
+        }
+        
+        if (hasNegativeCycle) {
+            System.out.println(RED + "The graph contains negative cycles." + RESET);
+        } else {
+            System.out.println(GREEN + "The graph does not contain negative cycles." + RESET);
+        }
+    }
+
+    private static int takeChoiceAndCheckValidity(int maxLimit, int minLimit, Scanner scanner) {
+        while (true) {
             try {
                 int choice = Integer.parseInt(scanner.nextLine());
                 if (choice < minLimit || choice > maxLimit) {
@@ -99,14 +253,13 @@ public class CommandLineInterface {
                     return choice;
                 }
             } catch (NumberFormatException e) {
-                scanner.nextLine(); //? Clear the invalid input
                 System.out.print(RED + "Invalid input. Please enter a number: " + RESET);
             }
         }
     }
-    
 
-    public static void main(String[] args) { //? Main function to run the program
+    
+    public static void main(String[] args) {
         CommandLineInterface cli = new CommandLineInterface();
         cli.Main_Func();
     }
