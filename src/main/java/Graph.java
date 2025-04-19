@@ -148,14 +148,38 @@ public class Graph {
             if(costs[i][i]<0)return false;
         return true;
     }
+    public String  getPathFloyd(int from,int to, int[][] predecessors){
+        if(from!=to && predecessors[from][to]==-1)return "No path exists";
+        StringBuilder sb=new StringBuilder();
+        sb.append(Integer.toString(to));
+        while(predecessors[from][to]!=-1){
+            sb.append("  >-  " +Integer.toString(predecessors[from][to]));
+            to=predecessors[from][to];
+        }
+        return sb.reverse().toString();
 
-//    public static void main(String[] args) throws IOException {
-//        Graph g=new Graph("input");
-//        int[] costs=new int[g.size()];
-//        int[] predecessors=new int[g.size()];
-//        g.dijkstra(0,costs,predecessors);
-//        for (int i = 0; i < g.size(); i++) {
-//            System.out.println(i + " -> " + costs[i] + " (" + predecessors[i] + ")");
-//        }
-//    }
+
+    }
+   public static void main(String[] args) throws IOException {
+    //    Graph g=new Graph("/media/dell/30D63D38D63CFFA01/Farouk/YEAR 2/Second Term/DSA/Labs/ShortestPathsProject/input");
+    //    int[][]costs=new int[g.nodes][g.nodes];
+    //    int[][]predecessors=new int[g.nodes][g.nodes];
+
+    //    System.out.println(g.floydWarshall(costs,predecessors));
+ 
+    //    for (int i = 0; i < g.nodes; i++) {
+    //        for (int j = 0; j < g.nodes; j++) {
+    //            System.out.print(predecessors[i][j]+" ");
+    //        }
+    //        System.out.println();
+
+    //    }
+    //    for(int i=0;i<g.nodes;i++){
+    //     for (int j = 0; j < g.nodes; j++) {
+    //        System.out.println(g.getPathFloyd(i, j, predecessors)); 
+            
+    //     }
+    //    }
+    }
+
 }
