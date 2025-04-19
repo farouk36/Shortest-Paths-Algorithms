@@ -10,6 +10,17 @@ public class CommandLineInterface {
     public static final String CYAN = "\u001B[36m";
     public static final String BOLD = "\u001B[1m";
 
+    public static Boolean hasNegativeEdges = false;
+
+    private static Boolean CheckNegativeEdges(Graph graph){
+        for (Edge edge : graph.getEdges()) {
+            if (edge.weight < 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void Main_Func (){ //? Main function to run the program
         System.out.println(CYAN + BOLD + "Welcome to the Graph Algorithm CLI!" + RESET);
         Scanner scanner = new Scanner(System.in);
@@ -27,6 +38,12 @@ public class CommandLineInterface {
                 System.out.println(RED + "Error loading graph: " + e.getMessage() + RESET);
                 System.out.println("Please try again.");
             }
+        }
+
+        if(CheckNegativeEdges(graph)){
+            hasNegativeEdges = true;
+            System.out.println(RED + "NOTE: The graph contains negative edges." + RESET);
+            System.out.println(RED + "Dijkstra is not possible." + RESET);
         }
 
         while (true){
@@ -69,18 +86,19 @@ public class CommandLineInterface {
     private static void handle_singleSourceShortestPaths(int source, Graph graph, Scanner scanner) {
         System.out.println(YELLOW + BOLD + "\n=== SINGLE-SOURCE SHORTEST PATHS ===" + RESET);
         System.out.println("Choose algorithm:");
-        System.out.println("1. Dijkstra's Algorithm");
+        if(!hasNegativeEdges) System.out.println("1. Dijkstra's Algorithm");
         System.out.println("2. Bellman-Ford Algorithm");
         System.out.println("3. Floyd-Warshall Algorithm");
         System.out.print(YELLOW + "Choose an option: " + RESET);
-        
-        int choice = takeChoiceAndCheckValidity(3, 1, scanner);
+
+        int choice = takeChoiceAndCheckValidity(3, hasNegativeEdges ? 2 : 1, scanner);
         
         int[] costs = new int[graph.size()];
         int[] predecessors = new int[graph.size()];
         int[][] costsMatrix = null;
         int[][] predecessorsMatrix = null;
         boolean hasNegativeCycle = false;
+        boolean result;
         
         switch (choice) {
             case 1:
@@ -89,7 +107,7 @@ public class CommandLineInterface {
                 break;
                 
             case 2:
-                boolean result = graph.bellmanFord(source, costs, predecessors);
+                result = graph.bellmanFord(source, costs, predecessors);
                 if (!result) {
                     System.out.println(RED + "Warning: Negative cycle detected!" + RESET);
                     System.out.println(RED + "Bellman-Ford algorithm failed!" + RESET);
@@ -99,7 +117,7 @@ public class CommandLineInterface {
                     System.out.println(GREEN + "Bellman-Ford algorithm executed successfully!" + RESET);
                 }
                 break;
-                
+
             case 3:
                 costsMatrix = new int[graph.size()][graph.size()];
                 predecessorsMatrix = new int[graph.size()][graph.size()];
@@ -118,6 +136,7 @@ public class CommandLineInterface {
         if (!hasNegativeCycle) {
             while (true) {
                 System.out.println(YELLOW + BOLD + "\n=== MENU ===" + RESET);
+                System.out.println(GREEN + "what do you want to know?" + RESET);
                 System.out.println("1. Cost of the path to a specific node");
                 System.out.println("2. Path from source to a specific node");
                 System.out.println("3. Return to main menu");
@@ -131,18 +150,18 @@ public class CommandLineInterface {
                 
                 System.out.print("Enter destination node: ");
                 int destination = takeChoiceAndCheckValidity(graph.size(), 0, scanner);
-                System.out.println(GREEN + "Bellman-Ford algorithm executed successfully!" + RESET);
+
                 if (choice == 3) { // Floyd-Warshall
                     if (queryChoice == 1) {
                         System.out.println("Cost of shortest path: " + costsMatrix[source][destination]);
                     } else {
-                        System.out.println("Shortest path: " + graph.getPathFloyd(source, destination, predecessorsMatrix));
+                        System.out.println("Shortest path: " + graph.getPath(source, destination, predecessorsMatrix[source]));
                     }
                 } else { // Dijkstra or Bellman-Ford
                     if (queryChoice == 1) {
                         System.out.println("Cost of shortest path: " + costs[destination]);
                     } else {
-                        System.out.println("Shortest path: " + graph.getPath_bellman_dijkstra(source, destination, predecessors));
+                        System.out.println("Shortest path: " + graph.getPath(source, destination, predecessors));
                     }
                 }
             }
@@ -152,12 +171,12 @@ public class CommandLineInterface {
     private static void handle_allPairsShortestPaths(Graph graph, Scanner scanner) {
         System.out.println(YELLOW + BOLD + "\n=== ALL-PAIRS SHORTEST PATHS ===" + RESET);
         System.out.println("Choose algorithm:");
-        System.out.println("1. Dijkstra's Algorithm (run for each source)");
+        if(!hasNegativeEdges) System.out.println("1. Dijkstra's Algorithm (run for each source)");
         System.out.println("2. Bellman-Ford Algorithm (run for each source)");
         System.out.println("3. Floyd-Warshall Algorithm");
         System.out.print(YELLOW + "Choose an option: " + RESET);
-        
-        int choice = takeChoiceAndCheckValidity(3, 1, scanner);
+
+        int choice = takeChoiceAndCheckValidity(3, hasNegativeEdges ? 2 : 1, scanner);
         
         int[][] costsMatrix = new int[graph.size()][graph.size()];
         int[][] predecessorsMatrix = new int[graph.size()][graph.size()];
@@ -233,11 +252,7 @@ public class CommandLineInterface {
                 if (queryChoice == 1) {
                     System.out.println("Cost of shortest path: " + costsMatrix[source][destination]);
                 } else {
-                    if (choice == 3) { // Floyd-Warshall
-                        System.out.println("Shortest path: " + graph.getPathFloyd(source, destination, predecessorsMatrix));
-                    } else { // Dijkstra or Bellman-Ford
-                        System.out.println("Shortest path: " + graph.getPath_bellman_dijkstra(source, destination, predecessorsMatrix[source]));
-                    }
+                    System.out.println("Shortest path: " + graph.getPath(source, destination, predecessorsMatrix[source]));
                 }
             }
         }

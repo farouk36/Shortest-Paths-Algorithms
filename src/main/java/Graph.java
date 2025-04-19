@@ -112,12 +112,12 @@ public class Graph {
         return !hasNegativeCycle(costs);
     }
 
-    public String getPath_bellman_dijkstra(int from, int to, int[] parents) {
+    public String getPath(int from, int to, int[] parents) {
         if (from != to && parents[to] == -1) return "No path exists";
         StringBuilder sb = new StringBuilder();
-        sb.append(Integer.toString(to));
+        sb.append(to);
         while (parents[to] != -1) {
-            sb.append("  >-  ").append(Integer.toString(parents[to]));
+            sb.append("  >-  ").append(parents[to]);
             to = parents[to];
         }
         return sb.reverse().toString();
@@ -163,18 +163,6 @@ public class Graph {
             if(costs[i][i]<0)return false;
         return true;
     }
-    public String  getPathFloyd(int from,int to, int[][] predecessors){
-        if(from!=to && predecessors[from][to]==-1)return "No path exists";
-        StringBuilder sb=new StringBuilder();
-        sb.append(Integer.toString(to));
-        while(predecessors[from][to]!=-1){
-            sb.append("  >-  ").append(Integer.toString(predecessors[from][to]));
-            to=predecessors[from][to];
-        }
-        return sb.reverse().toString();
-
-
-    }
 //    public static void main(String[] args) throws IOException {
 //        Graph g=new Graph("input");
 //          int [] costs=new int[g.size()];
@@ -183,13 +171,13 @@ public class Graph {
 //             System.out.println("Dijkstra: ");
 //             for (int i = 0; i < g.size(); i++) {
 //                 System.out.println("Cost to node " + i + ": " + costs[i]);
-//                 System.out.println("Path: " + g.getPath_bellman_dijkstra(0, i, parents));
+//                 System.out.println("Path: " + g.getPath(0, i, parents));
 //             }
 //             System.out.println("Bellman-Ford: ");
 //             if (g.bellmanFord(0, costs, parents)) {
 //                 for (int i = 0; i < g.size(); i++) {
 //                     System.out.println("Cost to node " + i + ": " + costs[i]);
-//                     System.out.println("Path: " + g.getPath_bellman_dijkstra(0, i, parents));
+//                     System.out.println("Path: " + g.getPath(0, i, parents));
 //                 }
 //             } else {
 //                 System.out.println("Negative cycle detected");
