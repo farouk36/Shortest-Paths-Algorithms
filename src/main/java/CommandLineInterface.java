@@ -136,7 +136,7 @@ public class CommandLineInterface {
                     if (queryChoice == 1) {
                         System.out.println("Cost of shortest path: " + costs[destination]);
                     } else {
-                        // System.out.println("Shortest path: " + graph.getPath(source, destination, predecessors));
+                        System.out.println("Shortest path: " + graph.getPath_bellman_dijkstra(source, destination, predecessors));
                     }
                 }
             }
@@ -159,13 +159,13 @@ public class CommandLineInterface {
         
         switch (choice) {
             case 1:
-                
+                //? Dijkstra's algorithm for all sources add here
+
                 System.out.println(GREEN + "Dijkstra algorithm executed for all sources successfully!" + RESET);
                 break;
                 
             case 2:
-               
-                
+               //? Bellman-Ford algorithm for all sources add here
                 break;
                 
             case 3:
@@ -205,7 +205,7 @@ public class CommandLineInterface {
                     if (choice == 3) { // Floyd-Warshall
                         System.out.println("Shortest path: " + graph.getPathFloyd(source, destination, predecessorsMatrix));
                     } else { // Dijkstra or Bellman-Ford
-                        // System.out.println("Shortest path: " + graph.getPath(source, destination, predecessorsMatrix[source]));
+                        // System.out.println("Shortest path: " + graph.getPath_bellman_dijkstra(source, destination, predecessorsMatrix[source]));
                     }
                 }
             }
