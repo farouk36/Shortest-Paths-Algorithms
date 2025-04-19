@@ -211,7 +211,8 @@ public class CommandLineInterface {
                     System.arraycopy(costs, 0, costsMatrix[i], 0, graph.size());
                     System.arraycopy(predecessors, 0, predecessorsMatrix[i], 0, graph.size());
                 }
-                System.out.println(GREEN + "Bellman-Ford algorithm executed successfully for all sources!" + RESET);
+                if (!hasNegativeCycle)
+                    System.out.println(GREEN + "Bellman-Ford algorithm executed successfully for all sources!" + RESET);
                 break;
             }
                 
