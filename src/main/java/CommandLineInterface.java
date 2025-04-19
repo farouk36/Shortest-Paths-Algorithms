@@ -158,17 +158,37 @@ public class CommandLineInterface {
         boolean hasNegativeCycle = false;
         
         switch (choice) {
-            case 1:
+            case 1:{
                 //? Dijkstra's algorithm for all sources add here
-
-                System.out.println(GREEN + "Dijkstra algorithm executed for all sources successfully!" + RESET);
+                for (int i = 0; i < graph.size(); i++) {
+                    int[] costs = new int[graph.size()];
+                    int[] predecessors = new int[graph.size()];
+                    graph.dijkstra(i, costs, predecessors);
+                    System.arraycopy(costs, 0, costsMatrix[i], 0, graph.size());
+                    System.arraycopy(predecessors, 0, predecessorsMatrix[i], 0, graph.size());
+                }
+                System.out.println(GREEN + "Dijkstra algorithm executed successfully for all sources!" + RESET);
                 break;
-                
-            case 2:
+            }
+            case 2:{
                //? Bellman-Ford algorithm for all sources add here
+                for (int i = 0; i < graph.size(); i++) {
+                    int[] costs = new int[graph.size()];
+                    int[] predecessors = new int[graph.size()];
+                    boolean result = graph.bellmanFord(i, costs, predecessors);
+                    if (!result) {
+                        System.out.println(RED + "Warning: Negative cycle detected from source " + i + "!" + RESET);
+                        hasNegativeCycle = true;
+                        break;
+                    }
+                    System.arraycopy(costs, 0, costsMatrix[i], 0, graph.size());
+                    System.arraycopy(predecessors, 0, predecessorsMatrix[i], 0, graph.size());
+                }
+                System.out.println(GREEN + "Bellman-Ford algorithm executed successfully for all sources!" + RESET);
                 break;
+            }
                 
-            case 3:
+            case 3:{
                 boolean result = graph.floydWarshall(costsMatrix, predecessorsMatrix);
                 // if (!result) {
                 //     System.out.println(RED + "Warning: Negative cycle detected!" + RESET);
@@ -177,6 +197,7 @@ public class CommandLineInterface {
                 //     System.out.println(GREEN + "Floyd-Warshall algorithm executed successfully!" + RESET);
                 // }
                 break;
+            }
         }
 
         if (!hasNegativeCycle) {
@@ -205,7 +226,7 @@ public class CommandLineInterface {
                     if (choice == 3) { // Floyd-Warshall
                         System.out.println("Shortest path: " + graph.getPathFloyd(source, destination, predecessorsMatrix));
                     } else { // Dijkstra or Bellman-Ford
-                        // System.out.println("Shortest path: " + graph.getPath_bellman_dijkstra(source, destination, predecessorsMatrix[source]));
+                        System.out.println("Shortest path: " + graph.getPath_bellman_dijkstra(source, destination, predecessorsMatrix[source]));
                     }
                 }
             }
